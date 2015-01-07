@@ -25,8 +25,4 @@
     <testsuite name="Brera Key/Value Store Library For Memcached Integration Tests">
         <directory>.</directory>
     </testsuite>
-    <php>
-        <includePath>../../data</includePath>
-        <includePath>data</includePath>
-    </php>
 </phpunit>
