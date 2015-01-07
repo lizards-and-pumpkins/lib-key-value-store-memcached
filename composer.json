@@ -17,6 +17,7 @@
         }
     ],
     "require": {
+        "ext-memcached": ">=1.0",
         "brera/proof-of-concept": "dev-discussion-import"
     },
     "require-dev": {
