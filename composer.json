@@ -24,7 +24,7 @@
         "phpunit/phpunit": "4.*"
     },
     "autoload" : {
-        "psr-4": { "Brera\\KeyValue\\Memcached\\": "src/" }
+        "psr-4": { "Brera\\DataPool\\KeyValue\\Memcached\\": "src/" }
     },
     "repositories": [
         {

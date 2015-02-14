@@ -1,9 +1,9 @@
 <?php
 
-namespace Brera\KeyValue\Memcached;
+namespace Brera\DataPool\KeyValue\Memcached;
 
-use Brera\KeyValue\KeyValueStore;
-use Brera\KeyValue\KeyNotFoundException;
+use Brera\DataPool\KeyValue\KeyValueStore;
+use Brera\DataPool\KeyValue\KeyNotFoundException;
 
 class MemcachedKeyValueStore implements KeyValueStore
 {
@@ -32,6 +32,7 @@ class MemcachedKeyValueStore implements KeyValueStore
 	/**
 	 * @param string $key
 	 * @return mixed
+	 * @throws KeyNotFoundException
 	 */
 	public function get($key)
 	{
