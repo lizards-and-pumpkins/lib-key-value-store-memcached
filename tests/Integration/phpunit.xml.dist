@@ -22,7 +22,7 @@
         timeoutForLargeTests="60"
         strict="true"
         verbose="false">
-    <testsuite name="Brera Key/Value Store Library For Memcached Integration Tests">
+    <testsuite name="Lizards And Pumpkins Key/Value Store Library For Memcached Integration Tests">
         <directory>.</directory>
     </testsuite>
 </phpunit>

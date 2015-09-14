@@ -1,9 +1,9 @@
 <?php
 
-namespace Brera\DataPool\KeyValue\Memcached;
+namespace LizardsAndPumpkins\DataPool\KeyValue\Memcached;
 
-use Brera\DataPool\KeyValue\KeyValueStore;
-use Brera\DataPool\KeyValue\KeyNotFoundException;
+use LizardsAndPumpkins\DataPool\KeyValue\KeyValueStore;
+use LizardsAndPumpkins\DataPool\KeyValue\KeyNotFoundException;
 
 class MemcachedKeyValueStore implements KeyValueStore
 {
@@ -22,7 +22,6 @@ class MemcachedKeyValueStore implements KeyValueStore
 	/**
 	 * @param string $key
 	 * @param mixed $value
-	 * @return null
 	 */
 	public function set($key, $value)
 	{
@@ -32,7 +31,6 @@ class MemcachedKeyValueStore implements KeyValueStore
 	/**
 	 * @param string $key
 	 * @return mixed
-	 * @throws KeyNotFoundException
 	 */
 	public function get($key)
 	{
@@ -55,8 +53,8 @@ class MemcachedKeyValueStore implements KeyValueStore
 	}
 
 	/**
-	 * @param array $keys
-	 * @return array
+	 * @param string[] $keys
+	 * @return mixed[]
 	 */
 	public function multiGet(array $keys)
 	{
@@ -64,8 +62,7 @@ class MemcachedKeyValueStore implements KeyValueStore
 	}
 
 	/**
-	 * @param array $items
-	 * @return null
+	 * @param mixed[] $items
 	 */
 	public function multiSet(array $items)
 	{

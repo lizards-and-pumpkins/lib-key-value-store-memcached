@@ -1,9 +1,11 @@
 <?php
 
-namespace Brera\DataPool\KeyValue\Memcached;
+namespace LizardsAndPumpkins\DataPool\KeyValue\Memcached;
+
+use LizardsAndPumpkins\KeyValue\KeyNotFoundException;
 
 /**
- * @covers  \Brera\DataPool\KeyValue\Memcached\MemcachedKeyValueStore
+ * @covers  \LizardsAndPumpkins\DataPool\KeyValue\Memcached\MemcachedKeyValueStore
  */
 class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,78 +14,59 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
      */
     private $store;
 
-	/**
-	 * @var \PHPUnit_Framework_MockObject_MockObject
-	 */
-	private $stubClient;
+    /**
+     * @var \Memcached|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $stubClient;
 
     public function setUp()
     {
-	    $this->stubClient = $this->getMockBuilder(\Memcached::class)
-	        ->setMethods(['get', 'set', 'setMulti', 'getMulti', 'getResultCode'])
-	        ->getMock();
+        $this->stubClient = $this->getMockBuilder(\Memcached::class)
+            ->setMethods(['get', 'set', 'setMulti', 'getMulti', 'getResultCode'])
+            ->getMock();
         $this->store = new MemcachedKeyValueStore($this->stubClient);
     }
 
-    /**
-     * @test
-     */
-    public function itShouldSetAndGetAValue()
+    public function testValueIsSetAndRetrieved()
     {
         $key = 'key';
         $value = 'value';
 
-	    $this->stubClient->expects($this->once())
-		    ->method('set');
-	    $this->stubClient->expects($this->any())
-		    ->method('get')
-		    ->willReturn($value);
+        $this->stubClient->expects($this->once())->method('set');
+        $this->stubClient->method('get')->willReturn($value);
 
         $this->store->set($key, $value);
         $this->assertEquals($value, $this->store->get($key));
     }
 
-    /**
-     * @test
-     */
-    public function itShouldReturnFalseItKeyDoesNotExist()
+    public function testFalseIsReturnedIfKeyDoesNotExist()
     {
-	    $this->stubClient->expects($this->once())
-		    ->method('getResultCode')
-		    ->willReturn(MemcachedKeyValueStore::MEMCACHED_RES_NOTFOUND);
+        $this->stubClient->expects($this->once())->method('getResultCode')
+            ->willReturn(MemcachedKeyValueStore::MEMCACHED_RES_NOTFOUND);
 
         $this->assertFalse($this->store->has('foo'));
     }
 
-    /**
-     * @test
-     * @expectedException \Brera\DataPool\KeyValue\KeyNotFoundException
-     */
-    public function itShouldThrowAnExceptionWhenValueIsNotSet()
+    public function testExceptionIsThrownIfValueIsNotSet()
     {
+        $this->setExpectedException(KeyNotFoundException::class);
         $this->store->get('not set key');
     }
 
-	/**
-	 * @test
-	 */
-	public function itShouldSetAndGetMultipleKeys()
-	{
-		$keys = ['key1', 'key2'];
-		$values = ['foo', 'bar'];
-		$items = array_combine($keys, $values);
+    public function testMultipleKeysAreSetAndRetrieved()
+    {
+        $keys = ['key1', 'key2'];
+        $values = ['foo', 'bar'];
+        $items = array_combine($keys, $values);
 
-		$this->stubClient->expects($this->once())
-		                 ->method('setMulti');
+        $this->stubClient->expects($this->once())->method('setMulti');
 
-		$this->store->multiSet($items);
+        $this->store->multiSet($items);
 
-		$this->stubClient->expects($this->once())
-		                 ->method('getMulti')
-		                 ->willReturn($values);
+        $this->stubClient->expects($this->once())->method('getMulti')->willReturn($values);
 
-		$result = $this->store->multiGet($keys);
+        $result = $this->store->multiGet($keys);
 
-		$this->assertSame($values, $result);
-	}
+        $this->assertSame($values, $result);
+    }
 }

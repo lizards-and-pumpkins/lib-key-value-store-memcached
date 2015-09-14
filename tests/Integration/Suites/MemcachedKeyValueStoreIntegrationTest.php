@@ -1,6 +1,6 @@
 <?php
 
-namespace Brera\DataPool\KeyValue\Memcached;
+namespace LizardsAndPumpkins\DataPool\KeyValue\Memcached;
 
 class MemcachedKeyValueStoreIntegrationTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,10 +28,7 @@ class MemcachedKeyValueStoreIntegrationTest extends \PHPUnit_Framework_TestCase
 		$this->keyValueStore = new MemcachedKeyValueStore($client);
 	}
 
-	/**
-	 * @test
-	 */
-	public function itShouldSetAndGetAValue()
+	public function testValueIsSetAndRetrieved()
 	{
 		$this->keyValueStore->set('foo', 'bar');
 		$result = $this->keyValueStore->get('foo');
@@ -39,10 +36,7 @@ class MemcachedKeyValueStoreIntegrationTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('bar', $result);
 	}
 
-	/**
-	 * @test
-	 */
-	public function itShouldSetAndGetMultipleValues()
+	public function testMultipleValuesAreSetAndRetrieved()
 	{
 		$keys = ['key1', 'key2'];
 		$values = ['foo', 'bar'];
@@ -54,10 +48,7 @@ class MemcachedKeyValueStoreIntegrationTest extends \PHPUnit_Framework_TestCase
 		$this->assertSame($items, $result);
 	}
 
-	/**
-	 * @test
-	 */
-	public function itShouldReturnFalseItKeyDoesNotExist()
+	public function testFalseIsReturnedIfKeyDoesNotExist()
 	{
 		$this->assertFalse($this->keyValueStore->has('foo'));
 	}
