@@ -50,6 +50,7 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
     public function testExceptionIsThrownIfValueIsNotSet()
     {
         $this->expectException(KeyNotFoundException::class);
+        $this->stubClient->method('get')->willReturn(false);
         $this->store->get('not set key');
     }
 
