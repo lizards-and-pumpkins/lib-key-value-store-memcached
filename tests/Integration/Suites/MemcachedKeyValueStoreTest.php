@@ -1,10 +1,11 @@
 <?php
 
-namespace LizardsAndPumpkins\DataPool\KeyValue\Memcached;
+namespace LizardsAndPumpkins;
 
 use LizardsAndPumpkins\DataPool\KeyValue\Exception\KeyNotFoundException;
+use LizardsAndPumpkins\DataPool\KeyValue\Memcached\MemcachedKeyValueStore;
 
-class MemcachedKeyValueStoreIntegrationTest extends \PHPUnit_Framework_TestCase
+class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
 {
     const MEMCACHED_HOST = 'localhost';
 
