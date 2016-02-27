@@ -68,4 +68,4 @@ class MemcachedKeyValueStore implements KeyValueStore
     {
         $this->client->setMulti($items);
     }
-} 
+}
