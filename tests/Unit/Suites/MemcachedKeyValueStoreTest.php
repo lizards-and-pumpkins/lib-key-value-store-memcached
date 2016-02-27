@@ -2,7 +2,7 @@
 
 namespace LizardsAndPumpkins\DataPool\KeyValue\Memcached;
 
-use LizardsAndPumpkins\KeyValue\KeyNotFoundException;
+use LizardsAndPumpkins\DataPool\KeyValue\Exception\KeyNotFoundException;
 
 /**
  * @covers  \LizardsAndPumpkins\DataPool\KeyValue\Memcached\MemcachedKeyValueStore

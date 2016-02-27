@@ -2,8 +2,8 @@
 
 namespace LizardsAndPumpkins\DataPool\KeyValue\Memcached;
 
+use LizardsAndPumpkins\DataPool\KeyValue\Exception\KeyNotFoundException;
 use LizardsAndPumpkins\DataPool\KeyValue\KeyValueStore;
-use LizardsAndPumpkins\DataPool\KeyValue\KeyNotFoundException;
 
 class MemcachedKeyValueStore implements KeyValueStore
 {
