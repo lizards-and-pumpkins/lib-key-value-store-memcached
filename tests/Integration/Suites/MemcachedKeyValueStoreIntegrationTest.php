@@ -2,6 +2,8 @@
 
 namespace LizardsAndPumpkins\DataPool\KeyValue\Memcached;
 
+use LizardsAndPumpkins\DataPool\KeyValue\Exception\KeyNotFoundException;
+
 class MemcachedKeyValueStoreIntegrationTest extends \PHPUnit_Framework_TestCase
 {
     const MEMCACHED_HOST = 'localhost';
@@ -51,5 +53,11 @@ class MemcachedKeyValueStoreIntegrationTest extends \PHPUnit_Framework_TestCase
     public function testFalseIsReturnedIfKeyDoesNotExist()
     {
         $this->assertFalse($this->keyValueStore->has('foo'));
+    }
+
+    public function testExceptionIsThrownIfValueIsNotSet()
+    {
+        $this->expectException(KeyNotFoundException::class);
+        $this->assertFalse($this->keyValueStore->get('foo'));
     }
 }
