@@ -27,45 +27,58 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
         $this->store = new MemcachedKeyValueStore($this->mockClient);
     }
 
-    public function testValueIsSetAndRetrieved()
+    public function testSettingValueIsDelegatedToClient()
     {
         $key = 'key';
         $value = 'value';
 
         $this->mockClient->expects($this->once())->method('set')->with($key, $value);
-        $this->mockClient->method('get')->willReturn($value);
-
         $this->store->set($key, $value);
+    }
+
+    public function testExceptionIsThrownDuringAttemptToGetAValueWhichIsNotSet()
+    {
+        $this->expectException(KeyNotFoundException::class);
+        $this->mockClient->method('getResultCode')->willReturn(MemcachedKeyValueStore::MEMCACHED_RES_NOTFOUND);
+        $this->store->get('not set key');
+    }
+
+    public function testGettingValueIsDelegatedToClient()
+    {
+        $key = 'key';
+        $value = 'value';
+
+        $this->mockClient->method('get')->with($key)->willReturn($value);
+
         $this->assertEquals($value, $this->store->get($key));
     }
 
-    public function testFalseIsReturnedIfKeyDoesNotExist()
+    public function testCheckingKeyExistenceIsDelegatedToClient()
     {
         $this->mockClient->method('getResultCode')->willReturn(MemcachedKeyValueStore::MEMCACHED_RES_NOTFOUND);
         $this->assertFalse($this->store->has('foo'));
     }
 
-    public function testExceptionIsThrownIfValueIsNotSet()
+    public function testSettingMultipleKeysIsDelegatedToClient()
     {
-        $this->expectException(KeyNotFoundException::class);
-        $this->mockClient->method('getResultCode')->willReturn(MemcachedKeyValueStore::MEMCACHED_RES_NOTFOUND);
-        $this->store->get('foo');
-    }
-
-    public function testMultipleKeysAreSetAndRetrieved()
-    {
-        $keys = ['key1', 'key2'];
-        $values = ['foo', 'bar'];
-        $items = array_combine($keys, $values);
+        $items = ['key1' => 'foo', 'key2' => 'bar'];
 
         $this->mockClient->expects($this->once())->method('setMulti')->with($items);
-
         $this->store->multiSet($items);
+    }
 
-        $this->mockClient->expects($this->once())->method('getMulti')->willReturn($values);
+    public function testEmptyArrayIsReturnedIfRequestedSnippetKeysArrayIsEmpty()
+    {
+        $this->assertSame([], $this->store->multiGet([]));
+    }
 
-        $result = $this->store->multiGet($keys);
+    public function testGettingMultipleKeysIsDelegatedToClient()
+    {
+        $items = ['key1' => 'foo', 'key2' => 'bar'];
+        $keys = array_keys($items);
 
-        $this->assertSame($values, $result);
+        $this->mockClient->expects($this->once())->method('getMulti')->with($keys)->willReturn($items);
+
+        $this->assertSame($items, $this->store->multiGet($keys));
     }
 }

@@ -59,6 +59,10 @@ class MemcachedKeyValueStore implements KeyValueStore
      */
     public function multiGet(array $keys)
     {
+        if (count($keys) === 0) {
+            return [];
+        }
+
         return $this->client->getMulti($keys);
     }
 
