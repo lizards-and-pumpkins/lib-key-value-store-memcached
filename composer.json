@@ -29,7 +29,7 @@
     "repositories": [
         {
             "type": "composer",
-            "url": "http://packages.brera.io"
+            "url": "https://packages.lizardsandpumpkins.com"
         }
     ],
     "minimum-stability": "dev",
