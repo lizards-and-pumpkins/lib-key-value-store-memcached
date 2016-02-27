@@ -21,7 +21,8 @@
         "lizards-and-pumpkins/catalog": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.*"
+        "phpunit/phpunit": "4.*",
+        "lizards-and-pumpkins/coding-standards": "dev-master"
     },
     "autoload" : {
         "psr-4": { "LizardsAndPumpkins\\DataPool\\KeyValue\\Memcached\\": "src/" }
