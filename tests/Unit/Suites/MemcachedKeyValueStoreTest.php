@@ -17,14 +17,14 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Memcached|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $stubClient;
+    private $mockClient;
 
     public function setUp()
     {
-        $this->stubClient = $this->getMockBuilder(\Memcached::class)
+        $this->mockClient = $this->getMockBuilder(\Memcached::class)
             ->setMethods(['get', 'set', 'setMulti', 'getMulti', 'getResultCode'])
             ->getMock();
-        $this->store = new MemcachedKeyValueStore($this->stubClient);
+        $this->store = new MemcachedKeyValueStore($this->mockClient);
     }
 
     public function testValueIsSetAndRetrieved()
@@ -32,8 +32,8 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
         $key = 'key';
         $value = 'value';
 
-        $this->stubClient->expects($this->once())->method('set');
-        $this->stubClient->method('get')->willReturn($value);
+        $this->mockClient->expects($this->once())->method('set')->with($key, $value);
+        $this->mockClient->method('get')->willReturn($value);
 
         $this->store->set($key, $value);
         $this->assertEquals($value, $this->store->get($key));
@@ -41,17 +41,15 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
 
     public function testFalseIsReturnedIfKeyDoesNotExist()
     {
-        $this->stubClient->expects($this->once())->method('getResultCode')
-            ->willReturn(MemcachedKeyValueStore::MEMCACHED_RES_NOTFOUND);
-
+        $this->mockClient->method('getResultCode')->willReturn(MemcachedKeyValueStore::MEMCACHED_RES_NOTFOUND);
         $this->assertFalse($this->store->has('foo'));
     }
 
     public function testExceptionIsThrownIfValueIsNotSet()
     {
         $this->expectException(KeyNotFoundException::class);
-        $this->stubClient->method('get')->willReturn(false);
-        $this->store->get('not set key');
+        $this->mockClient->method('getResultCode')->willReturn(MemcachedKeyValueStore::MEMCACHED_RES_NOTFOUND);
+        $this->store->get('foo');
     }
 
     public function testMultipleKeysAreSetAndRetrieved()
@@ -60,11 +58,11 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
         $values = ['foo', 'bar'];
         $items = array_combine($keys, $values);
 
-        $this->stubClient->expects($this->once())->method('setMulti');
+        $this->mockClient->expects($this->once())->method('setMulti')->with($items);
 
         $this->store->multiSet($items);
 
-        $this->stubClient->expects($this->once())->method('getMulti')->willReturn($values);
+        $this->mockClient->expects($this->once())->method('getMulti')->willReturn($values);
 
         $result = $this->store->multiGet($keys);
 

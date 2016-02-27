@@ -36,7 +36,7 @@ class MemcachedKeyValueStore implements KeyValueStore
     {
         $value = $this->client->get($key);
 
-        if (false === $value) {
+        if ($this->client->getResultCode() === self::MEMCACHED_RES_NOTFOUND) {
             throw new KeyNotFoundException(sprintf('Key not found "%s"', $key));
         }
 
@@ -50,8 +50,7 @@ class MemcachedKeyValueStore implements KeyValueStore
     public function has($key)
     {
         $this->client->get($key);
-
-        return self::MEMCACHED_RES_NOTFOUND !== $this->client->getResultCode();
+        return $this->client->getResultCode() !== self::MEMCACHED_RES_NOTFOUND;
     }
 
     /**
