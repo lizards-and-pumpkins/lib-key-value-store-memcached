@@ -18,12 +18,6 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        if (!class_exists(\Memcached::class)) {
-            $this->markTestSkipped(
-                sprintf('Memcached is not available on %s:%s', self::MEMCACHED_HOST, self::MEMCACHED_PORT)
-            );
-        }
-
         $client = new \Memcached();
         $client->addServer(self::MEMCACHED_HOST, self::MEMCACHED_PORT);
         $client->deleteMulti(['foo', 'key1', 'key2']);
