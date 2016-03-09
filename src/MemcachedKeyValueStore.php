@@ -2,70 +2,75 @@
 
 namespace LizardsAndPumpkins\DataPool\KeyValue\Memcached;
 
+use LizardsAndPumpkins\DataPool\KeyValue\Exception\KeyNotFoundException;
 use LizardsAndPumpkins\DataPool\KeyValue\KeyValueStore;
-use LizardsAndPumpkins\DataPool\KeyValue\KeyNotFoundException;
 
 class MemcachedKeyValueStore implements KeyValueStore
 {
-	const MEMCACHED_RES_NOTFOUND = 16;
+    const MEMCACHED_RES_NOTFOUND = 16;
 
-	/**
-	 * @var \Memcached
-	 */
-	private $client;
+    /**
+     * @var \Memcached
+     */
+    private $client;
 
-	public function __construct(\Memcached $client)
-	{
-		$this->client = $client;
-	}
+    public function __construct(\Memcached $client)
+    {
+        $this->client = $client;
+    }
 
-	/**
-	 * @param string $key
-	 * @param mixed $value
-	 */
-	public function set($key, $value)
-	{
-		$this->client->set($key, $value);
-	}
+    /**
+     * @param string $key
+     * @param mixed $value
+     */
+    public function set($key, $value)
+    {
+        $this->client->set($key, $value);
+    }
 
-	/**
-	 * @param string $key
-	 * @return mixed
-	 */
-	public function get($key)
-	{
-		if (!$value = $this->client->get($key)) {
-			throw new KeyNotFoundException(sprintf('Key not found "%s"', $key));
-		}
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function get($key)
+    {
+        $value = $this->client->get($key);
 
-		return $value;
-	}
+        if ($this->client->getResultCode() === self::MEMCACHED_RES_NOTFOUND) {
+            throw new KeyNotFoundException(sprintf('Key not found "%s"', $key));
+        }
 
-	/**
-	 * @param string $key
-	 * @return bool
-	 */
-	public function has($key)
-	{
-		$this->client->get($key);
+        return $value;
+    }
 
-		return self::MEMCACHED_RES_NOTFOUND !== $this->client->getResultCode();
-	}
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function has($key)
+    {
+        $this->client->get($key);
+        return $this->client->getResultCode() !== self::MEMCACHED_RES_NOTFOUND;
+    }
 
-	/**
-	 * @param string[] $keys
-	 * @return mixed[]
-	 */
-	public function multiGet(array $keys)
-	{
-		return $this->client->getMulti($keys);
-	}
+    /**
+     * @param string[] $keys
+     * @return mixed[]
+     */
+    public function multiGet(array $keys)
+    {
+        if (count($keys) === 0) {
+            return [];
+        }
 
-	/**
-	 * @param mixed[] $items
-	 */
-	public function multiSet(array $items)
-	{
-		$this->client->setMulti($items);
-	}
-} 
+        return $this->client->getMulti($keys);
+    }
+
+    /**
+     * @param mixed[] $items
+     */
+    public function multiSet(array $items)
+    {
+        $this->client->setMulti($items);
+    }
+}

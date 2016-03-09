@@ -2,7 +2,7 @@
 
 namespace LizardsAndPumpkins\DataPool\KeyValue\Memcached;
 
-use LizardsAndPumpkins\KeyValue\KeyNotFoundException;
+use LizardsAndPumpkins\DataPool\KeyValue\Exception\KeyNotFoundException;
 
 /**
  * @covers  \LizardsAndPumpkins\DataPool\KeyValue\Memcached\MemcachedKeyValueStore
@@ -17,56 +17,66 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Memcached|\PHPUnit_Framework_MockObject_MockObject
      */
-    private $stubClient;
+    private $mockClient;
 
     public function setUp()
     {
-        $this->stubClient = $this->getMockBuilder(\Memcached::class)
-            ->setMethods(['get', 'set', 'setMulti', 'getMulti', 'getResultCode'])
-            ->getMock();
-        $this->store = new MemcachedKeyValueStore($this->stubClient);
+        $this->mockClient = $this->getMock(\Memcached::class, [], [], '', false);
+        $this->store = new MemcachedKeyValueStore($this->mockClient);
     }
 
-    public function testValueIsSetAndRetrieved()
+    public function testSettingValueIsDelegatedToClient()
     {
         $key = 'key';
         $value = 'value';
 
-        $this->stubClient->expects($this->once())->method('set');
-        $this->stubClient->method('get')->willReturn($value);
-
+        $this->mockClient->expects($this->once())->method('set')->with($key, $value);
         $this->store->set($key, $value);
-        $this->assertEquals($value, $this->store->get($key));
     }
 
-    public function testFalseIsReturnedIfKeyDoesNotExist()
+    public function testExceptionIsThrownDuringAttemptToGetAValueWhichIsNotSet()
     {
-        $this->stubClient->expects($this->once())->method('getResultCode')
-            ->willReturn(MemcachedKeyValueStore::MEMCACHED_RES_NOTFOUND);
-
-        $this->assertFalse($this->store->has('foo'));
-    }
-
-    public function testExceptionIsThrownIfValueIsNotSet()
-    {
-        $this->setExpectedException(KeyNotFoundException::class);
+        $this->expectException(KeyNotFoundException::class);
+        $this->mockClient->method('getResultCode')->willReturn(MemcachedKeyValueStore::MEMCACHED_RES_NOTFOUND);
         $this->store->get('not set key');
     }
 
-    public function testMultipleKeysAreSetAndRetrieved()
+    public function testGettingValueIsDelegatedToClient()
     {
-        $keys = ['key1', 'key2'];
-        $values = ['foo', 'bar'];
-        $items = array_combine($keys, $values);
+        $key = 'key';
+        $value = 'value';
 
-        $this->stubClient->expects($this->once())->method('setMulti');
+        $this->mockClient->method('get')->with($key)->willReturn($value);
 
+        $this->assertEquals($value, $this->store->get($key));
+    }
+
+    public function testCheckingKeyExistenceIsDelegatedToClient()
+    {
+        $this->mockClient->method('getResultCode')->willReturn(MemcachedKeyValueStore::MEMCACHED_RES_NOTFOUND);
+        $this->assertFalse($this->store->has('foo'));
+    }
+
+    public function testSettingMultipleKeysIsDelegatedToClient()
+    {
+        $items = ['key1' => 'foo', 'key2' => 'bar'];
+
+        $this->mockClient->expects($this->once())->method('setMulti')->with($items);
         $this->store->multiSet($items);
+    }
 
-        $this->stubClient->expects($this->once())->method('getMulti')->willReturn($values);
+    public function testEmptyArrayIsReturnedIfRequestedSnippetKeysArrayIsEmpty()
+    {
+        $this->assertSame([], $this->store->multiGet([]));
+    }
 
-        $result = $this->store->multiGet($keys);
+    public function testGettingMultipleKeysIsDelegatedToClient()
+    {
+        $items = ['key1' => 'foo', 'key2' => 'bar'];
+        $keys = array_keys($items);
 
-        $this->assertSame($values, $result);
+        $this->mockClient->expects($this->once())->method('getMulti')->with($keys)->willReturn($items);
+
+        $this->assertSame($items, $this->store->multiGet($keys));
     }
 }
