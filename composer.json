@@ -17,7 +17,7 @@
         }
     ],
     "require": {
-        "ext-memcached": ">=1.0",
+        "ext-memcached": ">=1.0 <2.2",
         "lizards-and-pumpkins/catalog": "*"
     },
     "require-dev": {
