@@ -1,9 +1,9 @@
 <?php
 
-namespace LizardsAndPumpkins\DataPool\KeyValue\Memcached;
+namespace LizardsAndPumpkins\DataPool\KeyValueStore\Memcached;
 
-use LizardsAndPumpkins\DataPool\KeyValue\Exception\KeyNotFoundException;
-use LizardsAndPumpkins\DataPool\KeyValue\KeyValueStore;
+use LizardsAndPumpkins\DataPool\KeyValueStore\Exception\KeyNotFoundException;
+use LizardsAndPumpkins\DataPool\KeyValueStore\KeyValueStore;
 
 class MemcachedKeyValueStore implements KeyValueStore
 {
