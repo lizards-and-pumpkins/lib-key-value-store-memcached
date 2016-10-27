@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LizardsAndPumpkins\DataPool\KeyValueStore\Memcached;
 
 use LizardsAndPumpkins\DataPool\KeyValueStore\Exception\KeyNotFoundException;
@@ -23,7 +25,7 @@ class MemcachedKeyValueStore implements KeyValueStore
      * @param string $key
      * @param mixed $value
      */
-    public function set($key, $value)
+    public function set(string $key, $value)
     {
         $this->client->set($key, $value);
     }
@@ -32,7 +34,7 @@ class MemcachedKeyValueStore implements KeyValueStore
      * @param string $key
      * @return mixed
      */
-    public function get($key)
+    public function get(string $key)
     {
         $value = $this->client->get($key);
 
@@ -43,11 +45,7 @@ class MemcachedKeyValueStore implements KeyValueStore
         return $value;
     }
 
-    /**
-     * @param string $key
-     * @return bool
-     */
-    public function has($key)
+    public function has(string $key) : bool
     {
         $this->client->get($key);
         return $this->client->getResultCode() !== self::MEMCACHED_RES_NOTFOUND;
@@ -57,7 +55,7 @@ class MemcachedKeyValueStore implements KeyValueStore
      * @param string[] $keys
      * @return mixed[]
      */
-    public function multiGet(array $keys)
+    public function multiGet(string ...$keys) : array
     {
         if (count($keys) === 0) {
             return [];
