@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LizardsAndPumpkins;
 
 use LizardsAndPumpkins\DataPool\KeyValueStore\Exception\KeyNotFoundException;
@@ -40,7 +42,7 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
         $items = array_combine($keys, $values);
 
         $this->keyValueStore->multiSet($items);
-        $result = $this->keyValueStore->multiGet($keys);
+        $result = $this->keyValueStore->multiGet(...$keys);
 
         $this->assertSame($items, $result);
     }
