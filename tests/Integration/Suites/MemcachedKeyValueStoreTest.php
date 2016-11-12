@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace LizardsAndPumpkins;
 
@@ -59,10 +59,7 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->keyValueStore->get('foo'));
     }
 
-    /**
-     * @param \Memcached $client
-     */
-    protected function skipIfMemcacheIsNotRunning($client)
+    protected function skipIfMemcacheIsNotRunning(\Memcached $client)
     {
         $memcacheAddress = self::MEMCACHED_HOST . ':' . self::MEMCACHED_PORT;
 
