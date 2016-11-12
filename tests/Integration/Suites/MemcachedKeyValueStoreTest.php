@@ -22,10 +22,11 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
     {
         $client = new \Memcached();
         $client->addServer(self::MEMCACHED_HOST, self::MEMCACHED_PORT);
-        $client->deleteMulti(['foo', 'key1', 'key2']);
-        $this->keyValueStore = new MemcachedKeyValueStore($client);
 
         $this->skipIfMemcacheIsNotRunning($client);
+
+        $client->deleteMulti(['foo', 'key1', 'key2']);
+        $this->keyValueStore = new MemcachedKeyValueStore($client);
     }
 
     public function testValueIsSetAndRetrieved()
