@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace LizardsAndPumpkins;
 
@@ -22,6 +22,9 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
     {
         $client = new \Memcached();
         $client->addServer(self::MEMCACHED_HOST, self::MEMCACHED_PORT);
+        if (!isset($client->getStats()[self::MEMCACHED_HOST . ':' . self::MEMCACHED_PORT])) {
+            self::markTestSkipped('You need a running memcached to run the integration tests!');
+        }
         $client->deleteMulti(['foo', 'key1', 'key2']);
 
         $this->keyValueStore = new MemcachedKeyValueStore($client);
