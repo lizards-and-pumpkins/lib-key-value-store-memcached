@@ -22,12 +22,10 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
     {
         $client = new \Memcached();
         $client->addServer(self::MEMCACHED_HOST, self::MEMCACHED_PORT);
-        if (!isset($client->getStats()[self::MEMCACHED_HOST . ':' . self::MEMCACHED_PORT])) {
-            self::markTestSkipped('You need a running memcached to run the integration tests!');
-        }
         $client->deleteMulti(['foo', 'key1', 'key2']);
-
         $this->keyValueStore = new MemcachedKeyValueStore($client);
+
+        $this->skipIfMemcacheIsNotRunning($client);
     }
 
     public function testValueIsSetAndRetrieved()
@@ -59,5 +57,17 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(KeyNotFoundException::class);
         $this->assertFalse($this->keyValueStore->get('foo'));
+    }
+
+    /**
+     * @param \Memcached $client
+     */
+    protected function skipIfMemcacheIsNotRunning($client)
+    {
+        $memcacheAddress = self::MEMCACHED_HOST . ':' . self::MEMCACHED_PORT;
+
+        if (!isset($client->getStats()[$memcacheAddress])) {
+            self::markTestSkipped('You need a running memcached to run the integration tests!');
+        }
     }
 }
