@@ -23,7 +23,7 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->mockClient = $this->getMock(\Memcached::class, [], [], '', false);
+        $this->mockClient = $this->createMock(\Memcached::class);
         $this->store = new MemcachedKeyValueStore($this->mockClient);
     }
 
