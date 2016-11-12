@@ -67,7 +67,7 @@ class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
         $memcacheAddress = self::MEMCACHED_HOST . ':' . self::MEMCACHED_PORT;
 
         if (!isset($client->getStats()[$memcacheAddress])) {
-            self::markTestSkipped('You need a running memcached to run the integration tests!');
+            $this->markTestSkipped('You need a running memcached to run the integration tests!');
         }
     }
 }
