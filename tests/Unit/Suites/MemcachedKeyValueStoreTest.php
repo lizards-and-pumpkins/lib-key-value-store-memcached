@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace LizardsAndPumpkins\DataPool\KeyValueStore\Memcached;
 
 use LizardsAndPumpkins\DataPool\KeyValueStore\Exception\KeyNotFoundException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers  \LizardsAndPumpkins\DataPool\KeyValueStore\Memcached\MemcachedKeyValueStore
  */
-class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
+class MemcachedKeyValueStoreTest extends TestCase
 {
     /**
      * @var MemcachedKeyValueStore

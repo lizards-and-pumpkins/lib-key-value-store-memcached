@@ -6,8 +6,9 @@ namespace LizardsAndPumpkins;
 
 use LizardsAndPumpkins\DataPool\KeyValueStore\Exception\KeyNotFoundException;
 use LizardsAndPumpkins\DataPool\KeyValueStore\Memcached\MemcachedKeyValueStore;
+use PHPUnit\Framework\TestCase;
 
-class MemcachedKeyValueStoreTest extends \PHPUnit_Framework_TestCase
+class MemcachedKeyValueStoreTest extends TestCase
 {
     const MEMCACHED_HOST = 'localhost';
 
